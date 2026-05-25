@@ -1,7 +1,7 @@
 package com.github.senkex.centermessage;
 
 import com.github.senkex.centermessage.internal.LegacyToMini;
-import com.github.senkex.centermessage.internal.PlaceholderBridge;
+import com.github.senkex.centermessage.internal.PlaceholderHook;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -88,8 +88,6 @@ public final class CenterMessage {
         return LEGACY.serialize(centerComponent(message, options, papiTarget));
     }
 
-    /* -------------------------------------------------------- Component API */
-
     /** @see #centerComponent(String, CenterOptions, OfflinePlayer) */
     public static Component centerComponent(final String message) {
         return centerComponent(message, CenterOptions.CHAT, null);
@@ -150,8 +148,6 @@ public final class CenterMessage {
         }
         return out.toString();
     }
-
-    /* --------------------------------------------------------- center tags */
 
     /** Replaces every {@code <center>...</center>} block with its centered version. */
     public static String processCenterTags(final String message) {
@@ -261,8 +257,9 @@ public final class CenterMessage {
 
         String s = message;
 
-        if (options.parsePlaceholders() && papiTarget != null && PlaceholderBridge.isAvailable()) {
-            s = PlaceholderBridge.apply(papiTarget, s);
+        if (options.parsePlaceholders() && papiTarget != null
+                && Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+            s = PlaceholderHook.apply(papiTarget, s);
         }
         if (options.parseHexAmp()) {
             s = translateAmpHex(s);
@@ -296,8 +293,6 @@ public final class CenterMessage {
         m.appendTail(sb);
         return sb.toString();
     }
-
-    /* ---------------------------------------------------------- internals */
 
     private static int spacesFor(final int width, final int centerPx) {
         final int toCompensate = centerPx - (width / 2);

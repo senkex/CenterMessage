@@ -19,10 +19,10 @@ import org.jetbrains.annotations.NotNull;
  */
 public final class CenterOptions {
 
-    public static final CenterOptions CHAT  = new CenterOptions(154, true,  true,  true,  true);
-    public static final CenterOptions SIGN  = new CenterOptions(45,  true,  true,  true,  false);
-    public static final CenterOptions BOOK  = new CenterOptions(57,  true,  true,  true,  true);
-    public static final CenterOptions ANVIL = new CenterOptions(50,  true,  true,  true,  false);
+    public static final CenterOptions CHAT = new CenterOptions(154, true, true, true, true);
+    public static final CenterOptions SIGN = new CenterOptions(45, true, true, true, false);
+    public static final CenterOptions BOOK = new CenterOptions(57, true, true, true, true);
+    public static final CenterOptions ANVIL = new CenterOptions(50, true, true, true, false);
 
     private final int centerPx;
     private final boolean parseLegacyAmp;
@@ -42,20 +42,25 @@ public final class CenterOptions {
         this.parsePlaceholders = papi;
     }
 
-    /** @return half-width in pixels used to center the message */
-    public int centerPx() { return centerPx; }
+    public int centerPx() {
+        return centerPx;
+    }
 
-    /** @return whether {@code &x} legacy codes are translated to {@code §x} */
-    public boolean parseLegacyAmp() { return parseLegacyAmp; }
+    public boolean parseLegacyAmp() {
+        return parseLegacyAmp;
+    }
 
-    /** @return whether {@code &#RRGGBB} sequences are translated to Spigot hex */
-    public boolean parseHexAmp() { return parseHexAmp; }
+    public boolean parseHexAmp() {
+        return parseHexAmp;
+    }
 
-    /** @return whether MiniMessage tags are converted via Adventure (if present) */
-    public boolean parseMiniMessage() { return parseMiniMessage; }
+    public boolean parseMiniMessage() {
+        return parseMiniMessage;
+    }
 
-    /** @return whether PlaceholderAPI is invoked for the recipient (if present) */
-    public boolean parsePlaceholders() { return parsePlaceholders; }
+    public boolean parsePlaceholders() {
+        return parsePlaceholders;
+    }
 
     /**
      * Returns a new builder pre-populated with this instance's values.
@@ -85,11 +90,30 @@ public final class CenterOptions {
         private boolean mini = true;
         private boolean papi = true;
 
-        public Builder centerPx(final int px)              { this.centerPx = px; return this; }
-        public Builder parseLegacyAmp(final boolean v)     { this.legacy = v; return this; }
-        public Builder parseHexAmp(final boolean v)        { this.hex = v; return this; }
-        public Builder parseMiniMessage(final boolean v)   { this.mini = v; return this; }
-        public Builder parsePlaceholders(final boolean v)  { this.papi = v; return this; }
+        public Builder centerPx(final int px) {
+            this.centerPx = px;
+            return this;
+        }
+
+        public Builder parseLegacyAmp(final boolean v) {
+            this.legacy = v;
+            return this;
+        }
+
+        public Builder parseHexAmp(final boolean v) {
+            this.hex = v;
+            return this;
+        }
+
+        public Builder parseMiniMessage(final boolean v) {
+            this.mini = v;
+            return this;
+        }
+
+        public Builder parsePlaceholders(final boolean v) {
+            this.papi = v;
+            return this;
+        }
 
         @Contract(value = " -> new", pure = true)
         public @NotNull CenterOptions build() {
