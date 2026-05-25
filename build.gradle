@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'com.github.senkex'
-version = '1.0.3'
+version = '2.0.0'
 
 repositories {
     mavenCentral()
@@ -71,7 +71,7 @@ publishing {
 
             pom {
                 name = 'CenterMessage'
-                description = 'Lightweight library to center chat messages in Minecraft'
+                description = 'Adventure-powered library to center chat messages in Minecraft 1.16+. Supports legacy, hex and MiniMessage in a single pipeline.'
                 url = 'https://github.com/senkex/CenterMessage'
                 licenses {
                     license {

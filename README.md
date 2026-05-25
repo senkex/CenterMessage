@@ -1,31 +1,33 @@
 # CenterMessage
 
-[![Minecraft](https://img.shields.io/badge/Minecraft-1.7%2B-dark_green.svg)](https://shields.io/)
+[![Minecraft](https://img.shields.io/badge/Minecraft-1.16%2B-dark_green.svg)](https://shields.io/)
 [![Java](https://img.shields.io/badge/Java-8-orange.svg)](https://shields.io/)
 [![JitPack](https://jitpack.io/v/senkex/CenterMessage.svg)](https://jitpack.io/#senkex/CenterMessage)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
-Small library to center messages in Minecraft chat. It measures the rendered pixel width of the
-visible glyphs only, so color codes never push the text off-center. Legacy `&`/`§`, BungeeCord
-hex `&#RRGGBB`, Spigot hex `§x§R§R§G§G§B§B` and MiniMessage tags (`<color>`, `<gradient>`,
-`<bold>`, ...) are all stripped from the calculation.
+Adventure-powered library to center chat messages in Minecraft. Mix legacy
+`&` / `§`, hex `&#RRGGBB`, Spigot hex `§x§R§R§G§G§B§B` and MiniMessage tags
+(`<color>`, `<gradient>`, `<bold>`, ...) in the same string and it parses
+through a single pipeline. Color codes never push the text off-center —
+only visible glyphs contribute to the leading padding.
 
 > [!IMPORTANT]
-> Compatible with Minecraft **1.7 and newer**. Hex colors only render on 1.16+ clients, but the
-> spacing is computed correctly on every version.
+> Requires Minecraft **1.16 or newer** and Adventure at runtime. Paper ships
+> Adventure embedded; on Spigot you must shade `adventure-platform-bukkit`
+> yourself.
 
 > [!CAUTION]
-> Don't forget to [shade](#shading) the library if you ship it inside a plugin, otherwise it will
-> clash with any other plugin bundling its own copy.
+> Don't forget to [shade](#shading) the library if you ship it inside a
+> plugin, otherwise it will clash with any other plugin bundling its own copy.
 
-The library is a single static facade. No plugin instance, no `onEnable` hook, no config files —
-import it and call the static methods.
+The library is a single static facade. No plugin instance, no `onEnable` hook,
+no config files — import it and call the static methods.
 
 ### Getting Started
 
-Targets **Java 8** to keep the surface compatible with legacy servers. Bukkit/Spigot, PlaceholderAPI
-and Adventure are all `compileOnly` and detected at runtime through reflection, so adding the
-dependency never forces them onto your plugin.
+Compiled for **Java 8** bytecode so it fits whatever JDK Paper or Spigot is
+using on your version. Bukkit / Paper-API, PlaceholderAPI and Adventure are
+all `compileOnly` dependencies of the library.
 
 You can drop it into your project with JitPack:
 
@@ -74,21 +76,33 @@ dependencies {
 
 ### Usage
 
-The simplest case is sending a centered message to a `CommandSender`:
+Send a centered message to a `CommandSender`. The library uses Adventure
+when the sender supports it (Paper), falls back to legacy `sendMessage`
+otherwise:
 
 ```java
 CenterMessage.send(player, "&aHello &b<bold>World</bold>");
 ```
 
-If you just want the centered string back, use `center`:
+Get the centered string back:
 
 ```java
 String line = CenterMessage.center("&#FF55AA Centered &ltext");
 player.sendMessage(line);
 ```
 
-Multi-line messages can be centered line by line, or you can wrap only the lines you want with
-`<center>` tags:
+Or work directly with Adventure `Component`s:
+
+```java
+Component comp = CenterMessage.centerComponent("<gradient:#f00:#0f0>Hi</gradient>");
+player.sendMessage(comp);
+
+// Re-center any existing component
+Component custom = Component.text("hello").color(NamedTextColor.AQUA);
+player.sendMessage(CenterMessage.centerComponent(custom));
+```
+
+Multi-line and `<center>` blocks:
 
 ```java
 CenterMessage.sendBlock(player,
@@ -97,12 +111,9 @@ CenterMessage.sendBlock(player,
         "<center>&7Have fun.</center>");
 ```
 
-Anything outside a `<center>` block is sent verbatim, so you can mix centered headers with
-left-aligned body text without splitting the message yourself.
-
 ### Options
 
-The static methods default to chat width. For signs, books, anvils or any custom width use a
+Default is chat width. For signs, books, anvils or custom widths use
 `CenterOptions`:
 
 ```java
@@ -117,41 +128,32 @@ CenterOptions custom = CenterOptions.builder()
 CenterMessage.send(player, "&aTitle", custom);
 ```
 
-Every parser flag can be disabled independently if you want to skip work on messages that you know
-don't use a given format.
-
 ### PlaceholderAPI
 
-If PlaceholderAPI is installed on the server, every method that receives a `Player` or
-`OfflinePlayer` expands placeholders against that target before measuring the width:
+If PlaceholderAPI is installed on the server, every method that receives a
+`Player` or `OfflinePlayer` expands placeholders against that target before
+the message is parsed. No hard dependency is needed — the bridge is a
+reflection probe done once when the library loads.
 
 ```java
 CenterMessage.send(player, "&6Balance: &a%vault_eco_balance%");
 ```
 
-No dependency is required; the bridge is a reflection probe done once when the library loads.
-
-### MiniMessage
-
-Tags such as `<color>`, `<#FF55AA>`, `<gradient:...>`, `<bold>`, `<reset>` and friends are stripped
-from the width calculation regardless of whether Adventure is on the classpath. When Adventure is
-available, the tags are also converted to legacy `§` before sending, so the colors render on
-servers that don't ship Adventure natively.
-
 ### Drop-in colorize
 
 `CenterMessage.colorize` is a drop-in replacement for
-`ChatColor.translateAlternateColorCodes` that also understands `&#RRGGBB` and, if Adventure is
-present, MiniMessage:
+`ChatColor.translateAlternateColorCodes` that also understands `&#RRGGBB`
+and MiniMessage tags:
 
 ```java
-String colored = CenterMessage.colorize("&aHello &#FF55AA world &lbold");
+String colored = CenterMessage.colorize("&aHello &#FF55AA world <bold>!</bold>");
 ```
 
 ## Shading
 
-If you're shipping CenterMessage inside a plugin you **must** relocate it. Two plugins on the same
-server depending on different versions of the same package will eventually break someone's day.
+If you're shipping CenterMessage inside a plugin you **must** relocate it.
+Two plugins on the same server depending on different versions of the same
+package will eventually break someone's day.
 
 ### Maven Shade Plugin
 
@@ -210,12 +212,12 @@ tasks {
 
 ### Notes
 
-- Width is measured against the vanilla Minecraft font. Resource packs with custom widths can
-  override individual characters through `FontInfo.registerWidth(char, int)`.
-- The cache for the optional integrations is built once at class load. There's nothing to
-  configure and nothing to shut down.
-- Bold formatting is tracked across both legacy codes and MiniMessage tags, including nested
-  `<bold>` blocks.
+- Pipeline order: PlaceholderAPI → `&#RRGGBB` → `&x` → legacy-to-MiniMessage
+  conversion → MiniMessage parse. Mixing formats in the same string is fine.
+- Width is measured against the vanilla Minecraft font. Custom resource packs
+  can override widths through `FontInfo.registerWidth(char, int)`.
+- Bold formatting is honored end-to-end: nested `<bold>` blocks and legacy
+  `§l` both apply the correct extra pixel per character when measuring.
 
 ### License
 
