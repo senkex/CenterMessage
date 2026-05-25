@@ -33,7 +33,11 @@ public final class AdventureBridge {
         try {
             final Class<?> mini = Class.forName("net.kyori.adventure.text.minimessage.MiniMessage");
             miniInstance = mini.getMethod("miniMessage").invoke(null);
-            miniDeserialize = mini.getMethod("deserialize", String.class);
+            // MiniMessage is an interface that extends ComponentDecoder<String, Component>.
+            // After erasure, the interface declares `Object deserialize(Object)`. Bridge methods
+            // for the concrete signature only live on the implementing class, so we look up
+            // the method on the instance class, not on the interface.
+            miniDeserialize = miniInstance.getClass().getMethod("deserialize", String.class);
             miniOk = true;
         } catch (Throwable t) {
             error = "MiniMessage: " + t.getClass().getSimpleName() + " " + t.getMessage();
