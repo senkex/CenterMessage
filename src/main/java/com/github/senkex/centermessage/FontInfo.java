@@ -13,13 +13,19 @@ import java.util.Map;
  */
 public final class FontInfo {
 
-    /** Width of the space character in pixels. */
+    /**
+     * Width of the space character in pixels.
+     */
     public static final int SPACE_WIDTH = 3;
 
-    /** Extra pixel inserted between every pair of characters. */
+    /**
+     * Extra pixel inserted between every pair of characters.
+     */
     public static final int CHAR_SPACING = 1;
 
-    /** Extra width added per character when bold formatting is active. */
+    /**
+     * Extra width added per character when bold formatting is active.
+     */
     public static final int BOLD_EXTRA = 1;
 
     private static final Map<Character, Integer> WIDTHS = new HashMap<Character, Integer>(160);

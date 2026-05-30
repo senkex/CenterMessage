@@ -46,7 +46,9 @@ import java.util.regex.Pattern;
  */
 public final class CenterMessage {
 
-    /** Default chat half-width in pixels (320 px chat / 2). */
+    /**
+     * Default chat half-width in pixels (320 px chat / 2).
+     */
     public static final int CHAT_CENTER_PX = 154;
 
     private static final MiniMessage MINI = MiniMessage.miniMessage();
@@ -64,12 +66,25 @@ public final class CenterMessage {
         throw new UnsupportedOperationException("Facade class");
     }
 
-    /** @see #center(String, CenterOptions, OfflinePlayer) */
+    /**
+     * Centers the message using {@link CenterOptions#CHAT} and no PlaceholderAPI target.
+     *
+     * @param message the raw message, may mix legacy, hex and MiniMessage
+     * @return the centered legacy string
+     * @see #center(String, CenterOptions, OfflinePlayer)
+     */
     public static String center(final String message) {
         return center(message, CenterOptions.CHAT, null);
     }
 
-    /** @see #center(String, CenterOptions, OfflinePlayer) */
+    /**
+     * Centers the message using a custom half-width in pixels.
+     *
+     * @param message  the raw message, may mix legacy, hex and MiniMessage
+     * @param centerPx the half-width in pixels to center around
+     * @return the centered legacy string
+     * @see #center(String, CenterOptions, OfflinePlayer)
+     */
     public static String center(final String message, final int centerPx) {
         return center(message, CenterOptions.builder().centerPx(centerPx).build(), null);
     }
@@ -88,12 +103,25 @@ public final class CenterMessage {
         return LEGACY.serialize(centerComponent(message, options, papiTarget));
     }
 
-    /** @see #centerComponent(String, CenterOptions, OfflinePlayer) */
+    /**
+     * Centers the message using {@link CenterOptions#CHAT} and no PlaceholderAPI target.
+     *
+     * @param message the raw message
+     * @return the centered component
+     * @see #centerComponent(String, CenterOptions, OfflinePlayer)
+     */
     public static Component centerComponent(final String message) {
         return centerComponent(message, CenterOptions.CHAT, null);
     }
 
-    /** @see #centerComponent(String, CenterOptions, OfflinePlayer) */
+    /**
+     * Centers the message using the given options and no PlaceholderAPI target.
+     *
+     * @param message the raw message
+     * @param options the centering configuration
+     * @return the centered component
+     * @see #centerComponent(String, CenterOptions, OfflinePlayer)
+     */
     public static Component centerComponent(final String message, final CenterOptions options) {
         return centerComponent(message, options, null);
     }
@@ -112,7 +140,12 @@ public final class CenterMessage {
         return centerComponent(parse(message, options, papiTarget), options);
     }
 
-    /** Centers an existing {@link Component} using {@link CenterOptions#CHAT}. */
+    /**
+     * Centers an existing {@link Component} using {@link CenterOptions#CHAT}.
+     *
+     * @param component the component to center
+     * @return the centered component
+     */
     public static Component centerComponent(final Component component) {
         return centerComponent(component, CenterOptions.CHAT);
     }
@@ -132,12 +165,25 @@ public final class CenterMessage {
         return Component.text(repeat(spaces)).append(component);
     }
 
-    /** Centers every line independently. Lines are split on {@code \r?\n}. */
+    /**
+     * Centers every line independently. Lines are split on {@code \r?\n}.
+     *
+     * @param message the multi-line raw message
+     * @return the message with every line centered
+     */
     public static String centerLines(final String message) {
         return centerLines(message, CenterOptions.CHAT, null);
     }
 
-    /** @see #centerLines(String) */
+    /**
+     * Centers every line independently using the given options.
+     *
+     * @param message    the multi-line raw message
+     * @param options    the centering configuration
+     * @param papiTarget the PlaceholderAPI target, or {@code null} to skip
+     * @return the message with every line centered
+     * @see #centerLines(String)
+     */
     public static String centerLines(final String message, final CenterOptions options, final OfflinePlayer papiTarget) {
         if (message == null || message.isEmpty()) return "";
         final String[] lines = message.split("\\r?\\n", -1);
@@ -149,12 +195,26 @@ public final class CenterMessage {
         return out.toString();
     }
 
-    /** Replaces every {@code <center>...</center>} block with its centered version. */
+    /**
+     * Replaces every {@code <center>...</center>} block with its centered version.
+     *
+     * @param message the raw message containing zero or more {@code <center>} blocks
+     * @return the message with every block centered
+     */
     public static String processCenterTags(final String message) {
         return processCenterTags(message, CenterOptions.CHAT, null);
     }
 
-    /** @see #processCenterTags(String) */
+    /**
+     * Replaces every {@code <center>...</center>} block with its centered version
+     * using the given options.
+     *
+     * @param message    the raw message containing zero or more {@code <center>} blocks
+     * @param options    the centering configuration
+     * @param papiTarget the PlaceholderAPI target, or {@code null} to skip
+     * @return the message with every block centered
+     * @see #processCenterTags(String)
+     */
     public static String processCenterTags(final String message, final CenterOptions options, final OfflinePlayer papiTarget) {
         if (message == null || message.isEmpty()) return "";
         final Matcher m = CENTER_TAG.matcher(message);
@@ -167,12 +227,25 @@ public final class CenterMessage {
         return out.toString();
     }
 
-    /** Sends a centered message to the given recipient. Uses Adventure when the sender supports it. */
+    /**
+     * Sends a centered message to the given recipient.
+     * Uses Adventure when the sender supports it.
+     *
+     * @param sender  the recipient (player, console, etc.)
+     * @param message the raw message
+     */
     public static void send(final CommandSender sender, final String message) {
         send(sender, message, CenterOptions.CHAT);
     }
 
-    /** @see #send(CommandSender, String) */
+    /**
+     * Sends a centered message to the given recipient using the given options.
+     *
+     * @param sender  the recipient (player, console, etc.)
+     * @param message the raw message
+     * @param options the centering configuration
+     * @see #send(CommandSender, String)
+     */
     public static void send(final CommandSender sender, final String message, final CenterOptions options) {
         final OfflinePlayer target = (sender instanceof OfflinePlayer) ? (OfflinePlayer) sender : null;
         if (sender instanceof Audience) {
@@ -182,7 +255,12 @@ public final class CenterMessage {
         }
     }
 
-    /** Sends a pre-built component to a sender. */
+    /**
+     * Sends a pre-built component, centered, to a sender.
+     *
+     * @param sender    the recipient
+     * @param component the component to center and send
+     */
     public static void send(final CommandSender sender, final Component component) {
         if (sender instanceof Audience) {
             ((Audience) sender).sendMessage(centerComponent(component));
@@ -191,17 +269,35 @@ public final class CenterMessage {
         }
     }
 
-    /** Sends a centered string to an Adventure audience. */
+    /**
+     * Sends a centered string to an Adventure audience.
+     *
+     * @param audience the audience to send to
+     * @param message  the raw message
+     */
     public static void send(final Audience audience, final String message) {
         audience.sendMessage(centerComponent(message));
     }
 
-    /** Sends a multi-line message, honoring {@code <center>...</center>} blocks. */
+    /**
+     * Sends a multi-line message, honoring {@code <center>...</center>} blocks.
+     *
+     * @param sender  the recipient
+     * @param message the raw multi-line message
+     */
     public static void sendBlock(final CommandSender sender, final String message) {
         sendBlock(sender, message, CenterOptions.CHAT);
     }
 
-    /** @see #sendBlock(CommandSender, String) */
+    /**
+     * Sends a multi-line message honoring {@code <center>...</center>} blocks,
+     * using the given options.
+     *
+     * @param sender  the recipient
+     * @param message the raw multi-line message
+     * @param options the centering configuration
+     * @see #sendBlock(CommandSender, String)
+     */
     public static void sendBlock(final CommandSender sender, final String message, final CenterOptions options) {
         if (message == null) return;
         final OfflinePlayer target = (sender instanceof OfflinePlayer) ? (OfflinePlayer) sender : null;
@@ -211,12 +307,22 @@ public final class CenterMessage {
         }
     }
 
-    /** Broadcasts a centered message to every online player. */
+    /**
+     * Broadcasts a centered message to every online player.
+     *
+     * @param message the raw message
+     */
     public static void broadcast(final String message) {
         broadcast(message, CenterOptions.CHAT);
     }
 
-    /** @see #broadcast(String) */
+    /**
+     * Broadcasts a centered message to every online player using the given options.
+     *
+     * @param message the raw message
+     * @param options the centering configuration
+     * @see #broadcast(String)
+     */
     public static void broadcast(final String message, final CenterOptions options) {
         if (message == null) return;
         for (Player p : Bukkit.getOnlinePlayers()) {
@@ -232,13 +338,22 @@ public final class CenterMessage {
      * Translates every supported color format to a legacy {@code §} string.
      * Drop-in replacement for {@link ChatColor#translateAlternateColorCodes(char, String)}
      * that also understands {@code &#RRGGBB} and MiniMessage tags.
+     *
+     * @param message the raw message
+     * @return the legacy {@code §}-formatted string
      */
     public static String colorize(final String message) {
         if (message == null || message.isEmpty()) return "";
         return LEGACY.serialize(parse(message, CenterOptions.CHAT, null));
     }
 
-    /** Parses any supported color format into a {@link Component}. */
+    /**
+     * Parses any supported color format into a {@link Component} using
+     * {@link CenterOptions#CHAT} and no PlaceholderAPI target.
+     *
+     * @param message the raw message
+     * @return the parsed component
+     */
     public static Component parse(final String message) {
         return parse(message, CenterOptions.CHAT, null);
     }
@@ -275,7 +390,12 @@ public final class CenterMessage {
         return Component.text(s);
     }
 
-    /** Converts {@code &#RRGGBB} to the Spigot {@code §x§R§R§G§G§B§B} form. */
+    /**
+     * Converts {@code &#RRGGBB} to the Spigot {@code §x§R§R§G§G§B§B} form.
+     *
+     * @param input the message possibly containing {@code &#RRGGBB} tokens
+     * @return the message with hex tokens expanded to Spigot's legacy form
+     */
     public static String translateAmpHex(final String input) {
         final Matcher m = AMP_HEX.matcher(input);
         if (!m.find()) return input;

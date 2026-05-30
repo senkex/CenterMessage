@@ -71,7 +71,7 @@ publishing {
 
             pom {
                 name = 'CenterMessage'
-                description = 'Adventure-powered library to center chat messages in Minecraft 1.16+. Supports legacy, hex and MiniMessage in a single pipeline.'
+                description = 'Lightweight library to center chat messages in Minecraft'
                 url = 'https://github.com/senkex/CenterMessage'
                 licenses {
                     license {

@@ -42,22 +42,38 @@ public final class CenterOptions {
         this.parsePlaceholders = papi;
     }
 
+    /**
+     * @return the half-width in pixels used as the centering target
+     */
     public int centerPx() {
         return centerPx;
     }
 
+    /**
+     * @return {@code true} if legacy {@code &}-codes should be translated
+     */
     public boolean parseLegacyAmp() {
         return parseLegacyAmp;
     }
 
+    /**
+     * @return {@code true} if {@code &#RRGGBB} hex tokens should be translated
+     */
     public boolean parseHexAmp() {
         return parseHexAmp;
     }
 
+    /**
+     * @return {@code true} if MiniMessage tags should be parsed
+     */
     public boolean parseMiniMessage() {
         return parseMiniMessage;
     }
 
+    /**
+     * @return {@code true} if PlaceholderAPI placeholders should be expanded
+     *         when a target is provided
+     */
     public boolean parsePlaceholders() {
         return parsePlaceholders;
     }
@@ -76,13 +92,19 @@ public final class CenterOptions {
                 .parsePlaceholders(parsePlaceholders);
     }
 
-    /** @return an empty builder defaulting to chat-width and every parser enabled */
+    /**
+     * Creates a new builder defaulting to chat-width and every parser enabled.
+     *
+     * @return an empty builder
+     */
     @Contract(value = " -> new", pure = true)
     public static @NotNull Builder builder() {
         return new Builder();
     }
 
-    /** Builder for {@link CenterOptions}. */
+    /**
+     * Builder for {@link CenterOptions}.
+     */
     public static final class Builder {
         private int centerPx = 154;
         private boolean legacy = true;
@@ -90,31 +112,66 @@ public final class CenterOptions {
         private boolean mini = true;
         private boolean papi = true;
 
+        /**
+         * Sets the half-width in pixels used as the centering target.
+         *
+         * @param px the half-width in pixels
+         * @return this builder
+         */
         public Builder centerPx(final int px) {
             this.centerPx = px;
             return this;
         }
 
+        /**
+         * Enables or disables legacy {@code &}-code parsing.
+         *
+         * @param v whether legacy {@code &}-codes should be translated
+         * @return this builder
+         */
         public Builder parseLegacyAmp(final boolean v) {
             this.legacy = v;
             return this;
         }
 
+        /**
+         * Enables or disables {@code &#RRGGBB} hex parsing.
+         *
+         * @param v whether hex tokens should be translated
+         * @return this builder
+         */
         public Builder parseHexAmp(final boolean v) {
             this.hex = v;
             return this;
         }
 
+        /**
+         * Enables or disables MiniMessage parsing.
+         *
+         * @param v whether MiniMessage tags should be parsed
+         * @return this builder
+         */
         public Builder parseMiniMessage(final boolean v) {
             this.mini = v;
             return this;
         }
 
+        /**
+         * Enables or disables PlaceholderAPI expansion.
+         *
+         * @param v whether placeholders should be expanded
+         * @return this builder
+         */
         public Builder parsePlaceholders(final boolean v) {
             this.papi = v;
             return this;
         }
 
+        /**
+         * Builds an immutable {@link CenterOptions} from this builder's state.
+         *
+         * @return the configured options
+         */
         @Contract(value = " -> new", pure = true)
         public @NotNull CenterOptions build() {
             return new CenterOptions(centerPx, legacy, hex, mini, papi);

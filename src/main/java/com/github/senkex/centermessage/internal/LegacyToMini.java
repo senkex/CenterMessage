@@ -17,6 +17,14 @@ public final class LegacyToMini {
 
     private LegacyToMini() {}
 
+    /**
+     * Converts every legacy {@code §} token in the input into its MiniMessage
+     * equivalent. Unknown sequences are copied verbatim.
+     *
+     * @param input the legacy-formatted string, may be {@code null}
+     * @return the MiniMessage-equivalent string, or the input unchanged if it
+     *         contains no {@code §} characters
+     */
     public static String convert(final String input) {
         if (input == null || input.isEmpty() || input.indexOf('§') < 0) {
             return input;
